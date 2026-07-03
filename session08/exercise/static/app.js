@@ -18,18 +18,18 @@ const API_URL = "/todos";
 async function loadTodos() {
   // TODO(実習5): try-catch でエラーハンドリングを追加してください
   //   ヒント:
-  //   try {
-  //     const response = await fetch(API_URL);
-  //     if (!response.ok) {
-  //       const error = await response.json();
-  //       showError(error.detail || "TODOの取得に失敗しました");
-  //       return;
-  //     }
-  //     const todos = await response.json();
-  //     renderTodos(todos);
-  //   } catch (error) {
-  //     showError("通信エラーが発生しました");
-  //   }
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) {
+      const error = await response.json();
+      showError(error.detail || "TODOの取得に失敗しました");
+      return;
+    }
+    const todos = await response.json();
+    renderTodos(todos);
+  } catch (error) {
+    showError("通信エラーが発生しました");
+  }
 
   const response = await fetch(API_URL);
   const todos = await response.json();
@@ -152,14 +152,14 @@ function renderTodos(todos) {
 
 // TODO(実習5): showError 関数を実装してください
 //   ヒント:
-//   function showError(message) {
-//     const errorDiv = document.getElementById("error-message");
-//     errorDiv.textContent = message;
-//     errorDiv.style.display = "block";
-//     setTimeout(() => {
-//       errorDiv.style.display = "none";
-//     }, 5000);
-//   }
+function showError(message) {
+  const errorDiv = document.getElementById("error-message");
+    errorDiv.textContent = message;
+    errorDiv.style.display = "block";
+  setTimeout(() => {
+    errorDiv.style.display = "none";
+  }, 5000);
+}
 
 // ============================================================
 // イベントリスナー
