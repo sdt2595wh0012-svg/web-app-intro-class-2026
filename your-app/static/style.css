@@ -28,7 +28,7 @@ body {
 
 /* --- ヘッダー --- */
 .header {
-  background-color: #2563eb; /* 青色の背景 */
+  background-color: #2E7D32; /* 青色の背景 */
   color: white; /* 白い文字 */
   padding: 16px 24px; /* 内側の余白（上下16px / 左右24px） */
   text-align: center; /* 文字を中央ぞろえに */
@@ -93,7 +93,7 @@ body {
 /* 追加ボタン */
 .todo-button {
   padding: 12px 24px;
-  background-color: #2563eb;
+  background-color: #F2994A;
   color: white;
   border: none; /* 枠線なし */
   border-radius: 8px;
