@@ -106,7 +106,7 @@ body {
 
 /* :hover = マウスを乗せたときだけ適用 */
 .todo-button:hover {
-  background-color: #1d4ed8; /* 少し濃い青にして「押せる」感を出す */
+  background-color: #F2994A; /* 少し濃い青にして「押せる」感を出す */
 }
 
 /* --- TODOリスト --- */
