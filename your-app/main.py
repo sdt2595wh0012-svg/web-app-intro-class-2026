@@ -78,7 +78,7 @@ def get_cooks():
     cursor = conn.cursor()
 
     # todos テーブルの全データを id 順に取り出す
-    cursor.execute("SELECT id, title, done FROM cooks ORDER BY id")
+    cursor.execute("SELECT id, title, finished FROM cooks ORDER BY id")
     cooks = cursor.fetchall()  # 取り出した全行をリストで受け取る
 
     conn.close()  # 接続を閉じる
