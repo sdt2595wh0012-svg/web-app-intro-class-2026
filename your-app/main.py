@@ -54,7 +54,7 @@ def init_db():
 # 形に合わないデータが送られてきたら、FastAPIが自動でエラーを返してくれる。
 
 
-class TodoCreate(BaseModel):
+class CookCreate(BaseModel):
     # 新しいTODOを作るときに受け取るデータ
     # title は1文字以上100文字以下の文字列でなければならない
     title: str = Field(min_length=1, max_length=100)
@@ -71,27 +71,27 @@ class CookUpdate(BaseModel):
 # 「どのURLに、どの種類のリクエストが来たら、この関数を動かすか」を決める。
 
 
-@app.get("/todos")  # GET /todos にアクセスされたら実行
+@app.get("/cooks")  # GET /todos にアクセスされたら実行
 def get_cooks():
     """TODO一覧を取得する"""
     conn = sqlite3.connect(DATABASE)  # 接続する
     cursor = conn.cursor()
 
     # todos テーブルの全データを id 順に取り出す
-    cursor.execute("SELECT id, title, done FROM todos ORDER BY id")
-    todos = cursor.fetchall()  # 取り出した全行をリストで受け取る
+    cursor.execute("SELECT id, title, done FROM cooks ORDER BY id")
+    cooks = cursor.fetchall()  # 取り出した全行をリストで受け取る
 
     conn.close()  # 接続を閉じる
     # 1行は (id, title, done) の順のタプルなので、番号で取り出す。
     # 取り出したデータを、ブラウザに返しやすい辞書のリストに作り変える。
     return [
-        {"id": todo[0], "title": todo[1], "done": bool(todo[2])}
-        for todo in todos
+        {"id": cook[0], "title": cook[1], "finished": bool(cook[2])}
+        for cook in cooks
     ]
 
 
-@app.post("/todos", status_code=201)  # POST /todos で新規作成（201=作成成功）
-def create_todo(todo: TodoCreate):
+@app.post("/cooks", status_code=201)  # POST /todos で新規作成（201=作成成功）
+def create_cook(cook: CookCreate):
     """新しいTODOを作成する"""
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -99,61 +99,61 @@ def create_todo(todo: TodoCreate):
     # 新しいTODOを1件追加する（done は 0=未完了で登録）
     # ? を使うことで、危険な文字列が混ざってもSQLが壊れない（SQLインジェクション対策）
     cursor.execute(
-        "INSERT INTO todos (title, done) VALUES (?, 0)",
-        (todo.title,),
+        "INSERT INTO cooks (title, finished) VALUES (?, 0)",
+        (cook.title,),
     )
     conn.commit()  # 追加を確定する
-    todo_id = cursor.lastrowid  # たった今追加した行の id を取得する
+    cook_id = cursor.lastrowid  # たった今追加した行の id を取得する
 
     conn.close()
-    return {"id": todo_id, "title": todo.title, "done": False}
+    return {"id": cook_id, "title": cook.title, "finished": False}
 
 
 # PUT /todos/5 のように、URLの {todo_id} の部分が引数 todo_id に入る
-@app.put("/todos/{todo_id}")
-def update_todo(todo_id: int, todo: TodoUpdate):
+@app.put("/cooks/{cook_id}")
+def update_cook(cook_id: int, cook: CookUpdate):
     """TODOの完了状態を更新する"""
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
     # まず、その id のTODOが本当にあるか確認する
-    cursor.execute("SELECT title FROM todos WHERE id = ?", (todo_id,))
+    cursor.execute("SELECT title FROM cooks WHERE id = ?", (cook_id,))
     existing = cursor.fetchone()  # 1件だけ取り出す。無ければ None が返る
     if existing is None:
         conn.close()  # 見つからないときも接続は閉じてから終わる
         # 404エラー（見つからない）を返して処理を中断する
-        raise HTTPException(status_code=404, detail="TODO not found")
+        raise HTTPException(status_code=404, detail="COOK not found")
 
     # done（完了状態）を更新する。True/False は int() で 1/0 に変換して保存
     cursor.execute(
-        "UPDATE todos SET done = ? WHERE id = ?",
-        (int(todo.done), todo_id),
+        "UPDATE cooks SET finished = ? WHERE id = ?",
+        (int(cook.finished), cook_id),
     )
     conn.commit()  # 更新を確定する
 
     conn.close()
     # existing は (title,) のタプルなので、先頭を取り出す
-    return {"id": todo_id, "title": existing[0], "done": todo.done}
+    return {"id": cook_id, "title": existing[0], "finished": cook.finished}
 
 
-@app.delete("/todos/{todo_id}")  # DELETE /todos/5 で id=5 のTODOを削除
-def delete_todo(todo_id: int):
+@app.delete("/cooks/{cook_id}")  # DELETE /todos/5 で id=5 のTODOを削除
+def delete_cook(cook_id: int):
     """TODOを削除する"""
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
     # 削除する前に、その id のTODOが存在するか確認する
-    cursor.execute("SELECT id FROM todos WHERE id = ?", (todo_id,))
+    cursor.execute("SELECT id FROM cooks WHERE id = ?", (cook_id,))
     existing = cursor.fetchone()
     if existing is None:
         conn.close()
-        raise HTTPException(status_code=404, detail="TODO not found")
+        raise HTTPException(status_code=404, detail="COOK not found")
 
-    cursor.execute("DELETE FROM todos WHERE id = ?", (todo_id,))  # 削除する
+    cursor.execute("DELETE FROM cooks WHERE id = ?", (cook_id,))  # 削除する
     conn.commit()  # 削除を確定する
 
     conn.close()
-    return {"message": "TODO deleted", "id": todo_id}
+    return {"message": "COOK deleted", "id": cook_id}
 
 
 # --- 静的ファイル配信 ---
