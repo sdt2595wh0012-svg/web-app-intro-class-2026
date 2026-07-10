@@ -27,7 +27,7 @@ app.add_middleware(
 
 # --- データベース設定 ---
 # データを保存するファイルの名前。アプリと同じフォルダに todo.db が作られる
-DATABASE = "todo.db"
+DATABASE = "cooks.db"
 
 
 def init_db():
@@ -39,10 +39,10 @@ def init_db():
     #   title : TODOの内容（空はNG）
     #   done  : 完了したかどうか（0=未完了, 1=完了）
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS todos (
+        CREATE TABLE IF NOT EXISTS cooks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            done INTEGER DEFAULT 0
+            finished INTEGER DEFAULT 0
         )
     """)
     conn.commit()  # 変更を確定して保存する
@@ -60,10 +60,10 @@ class TodoCreate(BaseModel):
     title: str = Field(min_length=1, max_length=100)
 
 
-class TodoUpdate(BaseModel):
+class CookUpdate(BaseModel):
     # TODOを更新するときに受け取るデータ
     # done は True / False（完了したかどうか）
-    done: bool
+    finished: bool
 
 
 # --- APIエンドポイント ---
@@ -72,7 +72,7 @@ class TodoUpdate(BaseModel):
 
 
 @app.get("/todos")  # GET /todos にアクセスされたら実行
-def get_todos():
+def get_cooks():
     """TODO一覧を取得する"""
     conn = sqlite3.connect(DATABASE)  # 接続する
     cursor = conn.cursor()
