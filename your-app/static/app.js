@@ -73,7 +73,7 @@ async function addTodo() {
     const response = await fetch(API_URL, {
       method: "POST", // POST = 新しいデータを作る
       headers: { "Content-Type": "application/json" }, // 中身はJSON形式だと伝える
-      body: JSON.stringify({ title: title }), // データをJSON文字列にして送る
+      body: JSON.stringify({ cook: title }), // データをJSON文字列にして送る
     });
 
     if (!response.ok) {
@@ -93,13 +93,13 @@ async function addTodo() {
  * TODOの完了状態を切り替える
  * id: 対象のTODOの番号 / currentDone: いまの完了状態(true/false)
  */
-async function toggleTodo(id, currentDone) {
+async function toggleCook(id, currentDone) {
   try {
     // `${API_URL}/${id}` で /todos/5 のようなアドレスを作る（id=5のTODOが対象）
     const response = await fetch(`${API_URL}/${id}`, {
       method: "PUT", // PUT = 既存のデータを更新する
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ done: !currentDone }), // !で完了/未完了を反転させる
+      body: JSON.stringify({ finished: !currentDone }), // !で完了/未完了を反転させる
     });
 
     if (!response.ok) {
@@ -118,7 +118,7 @@ async function toggleTodo(id, currentDone) {
  * TODOを削除する
  * id: 削除したいTODOの番号
  */
-async function deleteTodo(id) {
+async function deleteCook(id) {
   try {
     // /todos/5 のようなアドレスに対して削除を依頼する
     const response = await fetch(`${API_URL}/${id}`, {
@@ -186,7 +186,7 @@ function renderTodos(todos) {
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-button";
     deleteBtn.textContent = "削除";
-    deleteBtn.addEventListener("click", () => deleteTodo(cook.id));
+    deleteBtn.addEventListener("click", () => deleteCook(cook.id));
 
     // <li> の中に [label][削除ボタン] を入れて、リストに追加する
     li.appendChild(label);
