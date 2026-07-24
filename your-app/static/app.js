@@ -44,7 +44,7 @@ async function loadTodos() {
     renderTodos(todos); // 画面に描画する
   } catch (error) {
     // そもそもサーバーにつながらなかったときなど
-    showError("通信エラーが発生しました");
+    showError("通信エラーが発生しまし");
   }
 }
 
@@ -85,7 +85,7 @@ async function addTodo() {
     input.value = ""; // 入力欄を空に戻す
     await loadTodos(); // 一覧を取り直して、追加結果を画面に反映する
   } catch (error) {
-    showError("通信エラーが発生しました");
+    showError("通信エラーが発生しま");
   }
 }
 
@@ -110,7 +110,7 @@ async function toggleCook(id, currentDone) {
 
     await loadTodos(); // 一覧を取り直して、更新結果を画面に反映する
   } catch (error) {
-    showError("通信エラーが発生しました");
+    showError("通信エラーが発生しま");
   }
 }
 
@@ -133,7 +133,7 @@ async function deleteCook(id) {
 
     await loadTodos(); // 一覧を取り直して、削除結果を画面に反映する
   } catch (error) {
-    showError("通信エラーが発生しました");
+    showError("通信エラーが発生し");
   }
 }
 
