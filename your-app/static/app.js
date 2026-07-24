@@ -26,7 +26,7 @@ const API_URL = "/cooks";
 /**
  * TODO一覧を取得して表示する
  */
-async function loadCooks() {
+async function loadTodos() {
   // try ... catch: 通信中にエラーが起きても、アプリが止まらないようにする
   try {
     // サーバーに「一覧をください」とお願いし、返事(response)を待つ
@@ -40,8 +40,8 @@ async function loadCooks() {
     }
 
     // 返ってきたデータ(JSON)をJavaScriptの配列に変換する
-    const cooks = await response.json();
-    renderCooks(cooks); // 画面に描画する
+    const todos = await response.json();
+    renderTodos(todos); // 画面に描画する
   } catch (error) {
     // そもそもサーバーにつながらなかったときなど
     showError("通信エラーが発生しました");
@@ -51,9 +51,9 @@ async function loadCooks() {
 /**
  * 新しいTODOを追加する
  */
-async function addCook() {
+async function addTodo() {
   // 入力欄の要素を取得し、入力された文字を読み取る（trimで前後の空白を除去）
-  const input = document.getElementById("cook-input");
+  const input = document.getElementById("todo-input");
   const title = input.value.trim();
 
   // 送信前のチェック（バリデーション）: 空のときは送らずに注意を表示
@@ -93,7 +93,7 @@ async function addCook() {
  * TODOの完了状態を切り替える
  * id: 対象のTODOの番号 / currentDone: いまの完了状態(true/false)
  */
-async function toggleCook(id, currentFinished) {
+async function toggleCook(id, currentDone) {
   try {
     // `${API_URL}/${id}` で /todos/5 のようなアドレスを作る（id=5のTODOが対象）
     const response = await fetch(`${API_URL}/${id}`, {
@@ -131,7 +131,7 @@ async function deleteCook(id) {
       return;
     }
 
-    await loadCooks(); // 一覧を取り直して、削除結果を画面に反映する
+    await loadTodos(); // 一覧を取り直して、削除結果を画面に反映する
   } catch (error) {
     showError("通信エラーが発生しました");
   }
@@ -151,24 +151,24 @@ async function deleteCook(id) {
  *  実行されてしまう危険がある（XSS）。そこで textContent を使い、
  *  入力を「ただの文字」として扱うことで、この攻撃を防いでいる。
  */
-function renderCooks(cooks) {
-  const list = document.getElementById("cook-list");
+function renderTodos(todos) {
+  const list = document.getElementById("todo-list");
   list.innerHTML = ""; // 古い表示を一度すべて消してから描き直す
 
   // todos配列の1件ずつ(todo)について、リストの行を作る
-  cooks.forEach((cook) => {
+  todos.forEach((cook) => {
     // <li> 完了済みなら "done" クラスを足して見た目を変える
     const li = document.createElement("li");
-    li.className = "cook-item" + (cook.finished ? " done" : "");
+    li.className = "todo-item" + (cook.finished ? " done" : "");
 
     // チェックボックスとタイトルをまとめる<label>
     const label = document.createElement("label");
-    label.className = "cook-label";
+    label.className = "todo-label";
 
     // 完了チェックボックス
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.className = "cook-checkbox";
+    checkbox.className = "todo-checkbox";
     checkbox.checked = cook.finished; // いまの完了状態をチェックに反映
     // チェックが変わったら、完了状態を切り替える関数を呼ぶ
     checkbox.addEventListener("change", () => toggleCook(cook.id, cook.finished));
@@ -216,10 +216,10 @@ function showError(message) {
 // ============================================================
 
 // フォームが送信された（追加ボタン or Enter）ときの動き
-document.getElementById("cook-form").addEventListener("submit", function (e) {
+document.getElementById("todo-form").addEventListener("submit", function (e) {
   e.preventDefault(); // ページが再読み込みされる標準動作を止める
-  addCook(); // 自分で用意した追加処理を呼ぶ
+  addTodo(); // 自分で用意した追加処理を呼ぶ
 });
 
 // ページ読み込み時に、まずTODO一覧を取得して表示する（ここがスタート地点）
-loadCooks();
+loadTodos();
