@@ -44,7 +44,7 @@ async function loadTodos() {
     renderTodos(todos); // 画面に描画する
   } catch (error) {
     // そもそもサーバーにつながらなかったときなど
-    showError("読み込みエラー:" + errir,message);
+    showError("通信エラーが発生しました");
   }
 }
 
