@@ -156,10 +156,10 @@ function renderTodos(todos) {
   list.innerHTML = ""; // 古い表示を一度すべて消してから描き直す
 
   // todos配列の1件ずつ(todo)について、リストの行を作る
-  todos.forEach((todo) => {
+  todos.forEach((cook) => {
     // <li> 完了済みなら "done" クラスを足して見た目を変える
     const li = document.createElement("li");
-    li.className = "todo-item" + (todo.done ? " done" : "");
+    li.className = "todo-item" + (cook.finished ? " done" : "");
 
     // チェックボックスとタイトルをまとめる<label>
     const label = document.createElement("label");
@@ -173,9 +173,9 @@ function renderTodos(todos) {
     // チェックが変わったら、完了状態を切り替える関数を呼ぶ
     checkbox.addEventListener("change", () => toggleCook(cook.id, cook.finished));
 
-    // TODOのタイトル文字。textContent で安全に入れる（XSS対策）
+    // TODOのタイトル文字。textContent で安全に入れる（XSS対策）＠
     const titleSpan = document.createElement("span");
-    titleSpan.className = "todo-title";
+    titleSpan.className = "cook-title";
     titleSpan.textContent = cook.title;
 
     // label の中に [チェックボックス][タイトル] を入れる
@@ -186,7 +186,7 @@ function renderTodos(todos) {
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-button";
     deleteBtn.textContent = "削除";
-    deleteBtn.addEventListener("click", () => deleteTodo(todo.id));
+    deleteBtn.addEventListener("click", () => deleteTodo(cook.id));
 
     // <li> の中に [label][削除ボタン] を入れて、リストに追加する
     li.appendChild(label);
