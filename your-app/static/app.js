@@ -44,7 +44,7 @@ async function loadTodos() {
     renderTodos(todos); // 画面に描画する
   } catch (error) {
     // そもそもサーバーにつながらなかったときなど
-    showError("通信エラーが発生しました");
+    showError("読み込みエラー:" + errir,message);
   }
 }
 
@@ -85,8 +85,7 @@ async function addTodo() {
     input.value = ""; // 入力欄を空に戻す
     await loadTodos(); // 一覧を取り直して、追加結果を画面に反映する
   } catch (error) {
-    showError("エラー内容" + error.message);
-    console.error(error);
+    showError("通信エラーが発生しました");
   }
 }
 
