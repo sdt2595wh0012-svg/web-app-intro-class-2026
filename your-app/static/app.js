@@ -85,7 +85,8 @@ async function addTodo() {
     input.value = ""; // 入力欄を空に戻す
     await loadTodos(); // 一覧を取り直して、追加結果を画面に反映する
   } catch (error) {
-    showError("通信エラーが発生しました");
+    showError("エラー内容" + error.message);
+    console.error(error);
   }
 }
 
