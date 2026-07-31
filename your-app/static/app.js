@@ -73,7 +73,7 @@ async function addTodo() {
     const response = await fetch(API_URL, {
       method: "POST", // POST = 新しいデータを作る
       headers: { "Content-Type": "application/json" }, // 中身はJSON形式だと伝える
-      body: JSON.stringify({ cook: title }), // データをJSON文字列にして送る
+      body: JSON.stringify({ title: title }), // データをJSON文字列にして送る
     });
 
     if (!response.ok) {
