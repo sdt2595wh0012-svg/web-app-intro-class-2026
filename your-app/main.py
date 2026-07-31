@@ -42,6 +42,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS cooks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
+            comment TEXT,
             finished INTEGER DEFAULT 0
         )
     """)
@@ -58,6 +59,7 @@ class CookCreate(BaseModel):
     # 新しいTODOを作るときに受け取るデータ
     # title は1文字以上100文字以下の文字列でなければならない
     title: str = Field(min_length=1, max_length=100)
+    comment: str = Field(min_length=1, max_length=200)
 
 
 class CookUpdate(BaseModel):
@@ -78,14 +80,14 @@ def get_cooks():
     cursor = conn.cursor()
 
     # todos テーブルの全データを id 順に取り出す
-    cursor.execute("SELECT id, title, finished FROM cooks ORDER BY id")
+    cursor.execute("SELECT id, title, comment, finished FROM cooks ORDER BY id")
     cooks = cursor.fetchall()  # 取り出した全行をリストで受け取る
 
     conn.close()  # 接続を閉じる
     # 1行は (id, title, done) の順のタプルなので、番号で取り出す。
     # 取り出したデータを、ブラウザに返しやすい辞書のリストに作り変える。
     return [
-        {"id": cook[0], "title": cook[1], "finished": bool(cook[2])}
+        {"id": cook[0], "title": cook[1], "comment": cook[2], "finished": bool(cook[3])}
         for cook in cooks
     ]
 
@@ -99,14 +101,14 @@ def create_cook(cook: CookCreate):
     # 新しいTODOを1件追加する（done は 0=未完了で登録）
     # ? を使うことで、危険な文字列が混ざってもSQLが壊れない（SQLインジェクション対策）
     cursor.execute(
-        "INSERT INTO cooks (title, finished) VALUES (?, 0)",
-        (cook.title,),
+        "INSERT INTO cooks (title, comment, finished) VALUES (?, ?, 0)",
+        (cook.title, cook.comment,),
     )
     conn.commit()  # 追加を確定する
     cook_id = cursor.lastrowid  # たった今追加した行の id を取得する
 
     conn.close()
-    return {"id": cook_id, "title": cook.title, "finished": False}
+    return {"id": cook_id, "title": cook.title, "comment": cook.comment, "finished": False}
 
 
 # PUT /todos/5 のように、URLの {todo_id} の部分が引数 todo_id に入る
