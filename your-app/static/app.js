@@ -54,7 +54,10 @@ async function loadTodos() {
 async function addTodo() {
   // 入力欄の要素を取得し、入力された文字を読み取る（trimで前後の空白を除去）
   const input = document.getElementById("todo-input");
+  const commentInput = document.getElementById("comment-input")
+
   const title = input.value.trim();
+  const comment = commentInput.value.trim();
 
   // 送信前のチェック（バリデーション）: 空のときは送らずに注意を表示
   if (title === "") {
@@ -73,7 +76,7 @@ async function addTodo() {
     const response = await fetch(API_URL, {
       method: "POST", // POST = 新しいデータを作る
       headers: { "Content-Type": "application/json" }, // 中身はJSON形式だと伝える
-      body: JSON.stringify({ title: title }), // データをJSON文字列にして送る
+      body: JSON.stringify({ title: title, comment: comment }), // データをJSON文字列にして送る
     });
 
     if (!response.ok) {
@@ -83,6 +86,7 @@ async function addTodo() {
     }
 
     input.value = ""; // 入力欄を空に戻す
+    commentInput.value = "";
     await loadTodos(); // 一覧を取り直して、追加結果を画面に反映する
   } catch (error) {
     showError("通信エラーが発生しました");
