@@ -182,9 +182,14 @@ function renderTodos(todos) {
     titleSpan.className = "cook-title";
     titleSpan.textContent = cook.title;
 
+    const commentSpan = document.createElement("span");
+    commentSpan.className = "cook-comment";
+    commentSpan.textContent = " (感想:" + cook.comment + ") ";
+
     // label の中に [チェックボックス][タイトル] を入れる
     label.appendChild(checkbox);
     label.appendChild(titleSpan);
+    label.appendChild(commentSpan);
 
     // 削除ボタン。押されたら削除する関数を呼ぶ
     const deleteBtn = document.createElement("button");
